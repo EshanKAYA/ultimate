@@ -4,146 +4,205 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Spy Database</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- TEMEL AYARLAR --- */
         body {
-            margin: 0; padding: 0; height: 100vh;
-            display: flex; justify-content: center; align-items: center;
-            background-color: #050505; color: #00ff00; /* Siyah Arka Plan, Yeşil Yazı */
-            font-family: 'Share Tech Mono', monospace;
-            overflow: hidden;
-        }
-
-        /* Matrix Izgara Efekti */
-        .grid-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -2;
-        }
-
-        /* --- KART TASARIMI --- */
-        .spy-card {
-            background: rgba(0, 20, 0, 0.95);
-            border: 2px solid #00ff00;
-            width: 750px;
-            padding: 30px;
-            box-shadow: 0 0 50px rgba(0, 255, 0, 0.15);
-            position: relative;
+            background-color: #050505;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
-            gap: 40px;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
 
-        /* Köşe Süslemeleri */
-        .spy-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 30px; height: 30px; border-top: 5px solid #00ff00; border-left: 5px solid #00ff00; }
-        .spy-card::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 30px; height: 30px; border-bottom: 5px solid #00ff00; border-right: 5px solid #00ff00; }
-
-        /* SOL TARAF (Ajan Resmi) */
-        .agent-section { flex: 1; text-align: center; border-right: 1px dashed #00ff00; padding-right: 20px; }
-        .agent-img { 
-            width: 180px; height: 180px; 
-            border: 2px solid #00ff00; 
-            filter: grayscale(100%) contrast(1.2) brightness(0.8); /* Güvenlik kamerası efekti */
-            object-fit: cover; 
-            margin-bottom: 10px;
-        }
-        
-        /* SAĞ TARAF (Veriler) */
-        .details-section { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; }
-        
-        h1 { margin: 0 0 15px 0; font-size: 2.2rem; border-bottom: 2px solid #00ff00; display: inline-block; letter-spacing: 2px; }
-        h2 { margin: 0; font-size: 1.4rem; color: #00ff00; text-transform: uppercase; }
-        
-        .data-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dotted rgba(0,255,0,0.3); padding-bottom: 5px; }
-        .label { color: #00ff00; font-weight: bold; opacity: 0.8; }
-        .value { color: white; text-shadow: 0 0 5px white; }
-
-        /* K9 BÖLÜMÜ */
-        .k9-box {
-            display: flex; align-items: center; gap: 15px; 
-            background: rgba(0, 255, 0, 0.05); 
-            padding: 10px; border: 1px solid #00ff00; margin-top: 15px;
-        }
-        .k9-img { width: 70px; height: 70px; border-radius: 5px; object-fit: cover; filter: sepia(100%); border: 1px solid #00ff00; }
-
-        /* FİNANS BÖLÜMÜ */
-        .crypto-box {
-            margin-top: 15px; text-align: right; font-size: 1.1rem; color: #f1c40f; font-weight: bold;
+        .container {
+            border: 2px solid #00ff00;
+            padding: 20px;
+            width: 800px;
+            background-color: #0a0a0a;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+            position: relative;
         }
 
-        /* GİZLİ DAMGASI */
         .stamp {
-            position: absolute; top: 20px; right: 20px;
-            border: 5px solid #d00; color: #d00;
-            font-size: 2rem; font-weight: bold; padding: 5px 20px;
-            transform: rotate(-15deg); opacity: 0.7;
-            letter-spacing: 5px; text-transform: uppercase;
-            pointer-events: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: red;
+            border: 3px solid red;
+            padding: 5px 15px;
+            font-size: 24px;
+            font-weight: bold;
+            transform: rotate(-15deg);
+            opacity: 0.7;
         }
 
-        /* BUTON */
-        button {
-            width: 100%; padding: 15px; margin-top: 20px;
-            background: #00ff00; color: black; font-weight: bold; font-family: 'Share Tech Mono', monospace; font-size: 1.3rem;
-            border: none; cursor: pointer; transition: 0.2s; text-transform: uppercase;
+        .content {
+            display: flex;
+            gap: 20px;
         }
-        button:hover { background: white; box-shadow: 0 0 20px #00ff00; }
-        button:active { transform: translateY(2px); }
 
+        .left-panel, .right-panel {
+            flex: 1;
+        }
+
+        .profile-img {
+            width: 100%;
+            filter: grayscale(100%);
+            border: 1px solid #00ff00;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #004400;
+            padding: 5px 0;
+            margin: 5px 0;
+        }
+
+        .label { color: #008800; font-weight: bold; }
+        .value { color: #ccffcc; text-align: right; }
+
+        .btn {
+            background-color: #00ff00;
+            color: black;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: bold;
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        .btn:hover { background-color: white; }
+
+        .btn-save {
+            background-color: #ff9800; /* Turuncu renk */
+            margin-bottom: 10px;
+            border: 1px solid black;
+        }
+        
+        .k9-section {
+            border: 1px solid #004400;
+            padding: 10px;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .k9-img { width: 80px; height: 60px; object-fit: cover; filter: sepia(100%); }
+
+        /* YENİ EKLENEN KISIM: ARŞİV TABLOSU */
+        .archive-section {
+            margin-top: 40px;
+            width: 800px;
+            border-top: 2px dashed #00ff00;
+            padding-top: 20px;
+        }
+
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .archive-card {
+            border: 1px solid #004400;
+            padding: 10px;
+            text-align: center;
+            background-color: #0f0f0f;
+        }
+
+        .archive-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid #00ff00;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="grid-bg"></div>
-
-    <div class="spy-card">
+    <div class="container">
         <div class="stamp">TOP SECRET</div>
-
-        <div class="agent-section">
-            <img src="{{ ajan.resim }}" class="agent-img">
-            <div style="font-size: 0.8rem; color: #00ff00; margin-bottom: 5px;">VERİTABANI EŞLEŞMESİ %99</div>
-            <h2>{{ ajan.kod_adi }}</h2>
-            <div style="font-size: 0.9rem; color: #aaa;">SINIF: 00-AJAN</div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ff00; margin-bottom: 20px; padding-bottom: 10px;">
+            <h1 style="margin: 0;">GÖREV DOSYASI</h1>
+            <span>FON (BTC): <span style="color: gold;">{{ para }}</span></span>
         </div>
 
-        <div class="details-section">
-            <div>
-                <h1>GÖREV DOSYASI</h1>
+        <div class="content">
+            <div class="left-panel">
+                <img src="{{ ajan.picture.large }}" class="profile-img">
                 
-                <div class="data-row">
+                <h2 style="text-transform: uppercase; margin: 10px 0;">{{ ajan.login.username }}</h2>
+                <div style="font-size: 0.8em; margin-bottom: 15px;">SINIF: 00-AJAN</div>
+
+                <form method="POST" action="/">
+                    <input type="hidden" name="isim" value="{{ ajan.name.first }} {{ ajan.name.last }}">
+                    <input type="hidden" name="konum" value="{{ ajan.location.city }}, {{ ajan.location.country }}">
+                    <input type="hidden" name="resim" value="{{ ajan.picture.large }}">
+                    
+                    <button type="submit" class="btn btn-save">
+                        [+] BU AJANI VERİTABANINA KAYDET
+                    </button>
+                </form>
+
+            </div>
+
+            <div class="right-panel">
+                <div class="info-row">
                     <span class="label">GERÇEK İSİM:</span>
-                    <span class="value">{{ ajan.isim }}</span>
+                    <span class="value">{{ ajan.name.first }} {{ ajan.name.last }}</span>
                 </div>
-                <div class="data-row">
+                <div class="info-row">
                     <span class="label">KONUM:</span>
-                    <span class="value">{{ ajan.sehir }}, {{ ajan.ulke }}</span>
+                    <span class="value">{{ ajan.location.city }}, {{ ajan.location.country }}</span>
                 </div>
-                <div class="data-row">
+                <div class="info-row">
                     <span class="label">DURUM:</span>
                     <span class="value" style="color: #00ff00;">GÖREVE HAZIR</span>
                 </div>
-            </div>
 
-            <div class="k9-box">
-                <img src="{{ kopek }}" class="k9-img">
-                <div>
-                    <div class="label">K-9 ORTAĞI</div>
-                    <div style="font-size: 0.8rem; color: #aaa;">Taktik Destek Birimi</div>
+                <div class="k9-section">
+                    <img src="{{ kopek }}" class="k9-img">
+                    <div>
+                        <div style="font-weight: bold;">K-9 ORTAĞI</div>
+                        <div style="font-size: 0.8em; color: #888;">Taktik Destek Birimi</div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="crypto-box">
-                FON (BTC): ${{ para }}
+                <br><br>
+                <a href="/" style="text-decoration: none;">
+                    <button class="btn">YENİ GÖREV EKİBİ ATA (YENİLE)</button>
+                </a>
             </div>
-
-            <form action="">
-                <button onclick="window.location.reload();">YENİ GÖREV EKİBİ ATA</button>
-            </form>
         </div>
+    </div>
+
+    <div class="archive-section">
+        <h3>>> ARŞİVLENMİŞ PERSONEL VERİTABANI ({{ kayitlar|length }})</h3>
+        
+        {% if kayitlar|length == 0 %}
+            <p style="color: #444;">>> Henüz kayıtlı ajan bulunmuyor...</p>
+        {% else %}
+            <div class="archive-grid">
+                {% for kayit in kayitlar %}
+                <div class="archive-card">
+                    <img src="{{ kayit.resim }}" class="archive-img">
+                    <div style="font-weight: bold; font-size: 0.9em;">{{ kayit.isim }}</div>
+                    <div style="font-size: 0.7em; color: #888;">{{ kayit.konum }}</div>
+                    <div style="font-size: 0.7em; color: orange;">{{ kayit.gorev }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
 </body>
