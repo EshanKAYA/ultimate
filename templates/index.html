@@ -10,20 +10,22 @@
             color: #00ff00;
             font-family: 'Courier New', Courier, monospace;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center; /* Ortalar */
+            align-items: center;     /* Dikey ortalar */
             min-height: 100vh;
             margin: 0;
             padding: 20px;
         }
 
+        /* ORTADAKİ ANA KART */
         .container {
             border: 2px solid #00ff00;
             padding: 20px;
-            width: 800px;
+            width: 700px;
             background-color: #0a0a0a;
             box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
             position: relative;
+            z-index: 10;
         }
 
         .stamp {
@@ -39,14 +41,8 @@
             opacity: 0.7;
         }
 
-        .content {
-            display: flex;
-            gap: 20px;
-        }
-
-        .left-panel, .right-panel {
-            flex: 1;
-        }
+        .content { display: flex; gap: 20px; }
+        .left-panel, .right-panel { flex: 1; }
 
         .profile-img {
             width: 100%;
@@ -81,11 +77,11 @@
         .btn:hover { background-color: white; }
 
         .btn-save {
-            background-color: #ff9800; /* Turuncu renk */
-            margin-bottom: 10px;
+            background-color: #ff9800; /* Turuncu */
             border: 1px solid black;
+            margin-bottom: 5px;
         }
-        
+
         .k9-section {
             border: 1px solid #004400;
             padding: 10px;
@@ -94,36 +90,48 @@
             align-items: center;
             gap: 10px;
         }
-
         .k9-img { width: 80px; height: 60px; object-fit: cover; filter: sepia(100%); }
 
-        /* YENİ EKLENEN KISIM: ARŞİV TABLOSU */
-        .archive-section {
-            margin-top: 40px;
-            width: 800px;
-            border-top: 2px dashed #00ff00;
-            padding-top: 20px;
-        }
-
-        .archive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-        }
-
-        .archive-card {
-            border: 1px solid #004400;
+        /* --- YENİ EKLENEN KISIM: SAĞ ALT KÖŞE PANELİ --- */
+        .saved-panel {
+            position: fixed; /* Sayfada sabit durur */
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px; /* Çok uzarsa kaydırma çubuğu çıksın */
+            overflow-y: auto;
+            background-color: #001100;
+            border: 2px solid #00ff00;
             padding: 10px;
-            text-align: center;
-            background-color: #0f0f0f;
+            box-shadow: -5px -5px 15px rgba(0, 255, 0, 0.1);
+            z-index: 100;
         }
 
-        .archive-img {
-            width: 50px;
-            height: 50px;
+        .panel-title {
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #003300;
+        }
+
+        .saved-item {
+            border: 1px solid #004400;
+            margin-bottom: 5px;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8em;
+            background-color: black;
+        }
+
+        .saved-img {
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             border: 1px solid #00ff00;
-            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -134,74 +142,58 @@
         
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ff00; margin-bottom: 20px; padding-bottom: 10px;">
             <h1 style="margin: 0;">GÖREV DOSYASI</h1>
-            <span>FON (BTC): <span style="color: gold;">{{ para }}</span></span>
+            <span style="font-size: 0.8em;">BTC: <span style="color: gold;">{{ para }}</span></span>
         </div>
 
         <div class="content">
             <div class="left-panel">
                 <img src="{{ ajan.picture.large }}" class="profile-img">
-                
-                <h2 style="text-transform: uppercase; margin: 10px 0;">{{ ajan.login.username }}</h2>
+                <h2 style="text-transform: uppercase; margin: 10px 0; font-size: 1.2em;">{{ ajan.login.username }}</h2>
                 <div style="font-size: 0.8em; margin-bottom: 15px;">SINIF: 00-AJAN</div>
 
                 <form method="POST" action="/">
                     <input type="hidden" name="isim" value="{{ ajan.name.first }} {{ ajan.name.last }}">
                     <input type="hidden" name="konum" value="{{ ajan.location.city }}, {{ ajan.location.country }}">
                     <input type="hidden" name="resim" value="{{ ajan.picture.large }}">
-                    
-                    <button type="submit" class="btn btn-save">
-                        [+] BU AJANI VERİTABANINA KAYDET
-                    </button>
+                    <button type="submit" class="btn btn-save">[+] ARŞİVE EKLE</button>
                 </form>
-
             </div>
 
             <div class="right-panel">
-                <div class="info-row">
-                    <span class="label">GERÇEK İSİM:</span>
-                    <span class="value">{{ ajan.name.first }} {{ ajan.name.last }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">KONUM:</span>
-                    <span class="value">{{ ajan.location.city }}, {{ ajan.location.country }}</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">DURUM:</span>
-                    <span class="value" style="color: #00ff00;">GÖREVE HAZIR</span>
-                </div>
+                <div class="info-row"><span class="label">İSİM:</span> <span class="value">{{ ajan.name.first }} {{ ajan.name.last }}</span></div>
+                <div class="info-row"><span class="label">KONUM:</span> <span class="value">{{ ajan.location.city }}, {{ ajan.location.country }}</span></div>
+                <div class="info-row"><span class="label">DURUM:</span> <span class="value" style="color: #00ff00;">GÖREVE HAZIR</span></div>
 
                 <div class="k9-section">
                     <img src="{{ kopek }}" class="k9-img">
                     <div>
-                        <div style="font-weight: bold;">K-9 ORTAĞI</div>
-                        <div style="font-size: 0.8em; color: #888;">Taktik Destek Birimi</div>
+                        <div style="font-weight: bold; font-size: 0.9em;">K-9 BİRİMİ</div>
                     </div>
                 </div>
 
-                <br><br>
+                <br>
                 <a href="/" style="text-decoration: none;">
-                    <button class="btn">YENİ GÖREV EKİBİ ATA (YENİLE)</button>
+                    <button class="btn">YENİLE / GEÇ</button>
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="archive-section">
-        <h3>>> ARŞİVLENMİŞ PERSONEL VERİTABANI ({{ kayitlar|length }})</h3>
+    <div class="saved-panel">
+        <div class="panel-title">>> KAYDEDİLEN AJANLAR ({{ kayitlar|length }})</div>
         
         {% if kayitlar|length == 0 %}
-            <p style="color: #444;">>> Henüz kayıtlı ajan bulunmuyor...</p>
+            <div style="text-align: center; color: #555; padding: 10px;">Veri Yok...</div>
         {% else %}
-            <div class="archive-grid">
-                {% for kayit in kayitlar %}
-                <div class="archive-card">
-                    <img src="{{ kayit.resim }}" class="archive-img">
-                    <div style="font-weight: bold; font-size: 0.9em;">{{ kayit.isim }}</div>
-                    <div style="font-size: 0.7em; color: #888;">{{ kayit.konum }}</div>
-                    <div style="font-size: 0.7em; color: orange;">{{ kayit.gorev }}</div>
+            {% for kayit in kayitlar %}
+            <div class="saved-item">
+                <img src="{{ kayit.resim }}" class="saved-img">
+                <div>
+                    <div style="color: white;">{{ kayit.isim }}</div>
+                    <div style="color: #666;">{{ kayit.konum }}</div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         {% endif %}
     </div>
 
