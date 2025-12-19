@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Spy Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- TEMEL AYARLAR --- */
+        body {
+            margin: 0; padding: 0; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            background-color: #050505; color: #00ff00; /* Siyah Arka Plan, Yeşil Yazı */
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+        }
+
+        /* Matrix Izgara Efekti */
+        .grid-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+        }
+
+        /* --- KART TASARIMI --- */
+        .spy-card {
+            background: rgba(0, 20, 0, 0.95);
+            border: 2px solid #00ff00;
+            width: 750px;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.15);
+            position: relative;
+            display: flex;
+            gap: 40px;
+        }
+
+        /* Köşe Süslemeleri */
+        .spy-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 30px; height: 30px; border-top: 5px solid #00ff00; border-left: 5px solid #00ff00; }
+        .spy-card::after { content: ''; position: absolute; bottom: -1px; right: -1px; width: 30px; height: 30px; border-bottom: 5px solid #00ff00; border-right: 5px solid #00ff00; }
+
+        /* SOL TARAF (Ajan Resmi) */
+        .agent-section { flex: 1; text-align: center; border-right: 1px dashed #00ff00; padding-right: 20px; }
+        .agent-img { 
+            width: 180px; height: 180px; 
+            border: 2px solid #00ff00; 
+            filter: grayscale(100%) contrast(1.2) brightness(0.8); /* Güvenlik kamerası efekti */
+            object-fit: cover; 
+            margin-bottom: 10px;
+        }
+        
+        /* SAĞ TARAF (Veriler) */
+        .details-section { flex: 1.5; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        h1 { margin: 0 0 15px 0; font-size: 2.2rem; border-bottom: 2px solid #00ff00; display: inline-block; letter-spacing: 2px; }
+        h2 { margin: 0; font-size: 1.4rem; color: #00ff00; text-transform: uppercase; }
+        
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dotted rgba(0,255,0,0.3); padding-bottom: 5px; }
+        .label { color: #00ff00; font-weight: bold; opacity: 0.8; }
+        .value { color: white; text-shadow: 0 0 5px white; }
+
+        /* K9 BÖLÜMÜ */
+        .k9-box {
+            display: flex; align-items: center; gap: 15px; 
+            background: rgba(0, 255, 0, 0.05); 
+            padding: 10px; border: 1px solid #00ff00; margin-top: 15px;
+        }
+        .k9-img { width: 70px; height: 70px; border-radius: 5px; object-fit: cover; filter: sepia(100%); border: 1px solid #00ff00; }
+
+        /* FİNANS BÖLÜMÜ */
+        .crypto-box {
+            margin-top: 15px; text-align: right; font-size: 1.1rem; color: #f1c40f; font-weight: bold;
+        }
+
+        /* GİZLİ DAMGASI */
+        .stamp {
+            position: absolute; top: 20px; right: 20px;
+            border: 5px solid #d00; color: #d00;
+            font-size: 2rem; font-weight: bold; padding: 5px 20px;
+            transform: rotate(-15deg); opacity: 0.7;
+            letter-spacing: 5px; text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        /* BUTON */
+        button {
+            width: 100%; padding: 15px; margin-top: 20px;
+            background: #00ff00; color: black; font-weight: bold; font-family: 'Share Tech Mono', monospace; font-size: 1.3rem;
+            border: none; cursor: pointer; transition: 0.2s; text-transform: uppercase;
+        }
+        button:hover { background: white; box-shadow: 0 0 20px #00ff00; }
+        button:active { transform: translateY(2px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <div class="spy-card">
+        <div class="stamp">TOP SECRET</div>
+
+        <div class="agent-section">
+            <img src="{{ ajan.resim }}" class="agent-img">
+            <div style="font-size: 0.8rem; color: #00ff00; margin-bottom: 5px;">VERİTABANI EŞLEŞMESİ %99</div>
+            <h2>{{ ajan.kod_adi }}</h2>
+            <div style="font-size: 0.9rem; color: #aaa;">SINIF: 00-AJAN</div>
+        </div>
+
+        <div class="details-section">
+            <div>
+                <h1>GÖREV DOSYASI</h1>
+                
+                <div class="data-row">
+                    <span class="label">GERÇEK İSİM:</span>
+                    <span class="value">{{ ajan.isim }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">KONUM:</span>
+                    <span class="value">{{ ajan.sehir }}, {{ ajan.ulke }}</span>
+                </div>
+                <div class="data-row">
+                    <span class="label">DURUM:</span>
+                    <span class="value" style="color: #00ff00;">GÖREVE HAZIR</span>
+                </div>
+            </div>
+
+            <div class="k9-box">
+                <img src="{{ kopek }}" class="k9-img">
+                <div>
+                    <div class="label">K-9 ORTAĞI</div>
+                    <div style="font-size: 0.8rem; color: #aaa;">Taktik Destek Birimi</div>
+                </div>
+            </div>
+
+            <div class="crypto-box">
+                FON (BTC): ${{ para }}
+            </div>
+
+            <form action="">
+                <button onclick="window.location.reload();">YENİ GÖREV EKİBİ ATA</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
