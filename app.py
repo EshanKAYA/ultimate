@@ -1,43 +1,38 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request # request'i eklemeyi unutma!
 import requests
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    # --- 1. API: RASTGELE AJAN (Random User API) ---
-    # Bize rastgele bir insan profili verir.
-    try:
-        user_resp = requests.get('https://randomuser.me/api/')
-        user_data = user_resp.json()['results'][0]
-        ajan = {
-            'isim': f"{user_data['name']['first']} {user_data['name']['last']}",
-            'resim': user_data['picture']['large'],
-            'ulke': user_data['location']['country'],
-            'sehir': user_data['location']['city'],
-            'kod_adi': user_data['login']['username']
+# --- YENİ EKLENECEK KISIM 1: KAYIT LİSTESİ ---
+# Bu liste ajanları hafızada tutacak
+kaydedilen_ajanlar = []
+# ---------------------------------------------
+
+@app.route('/', methods=['GET', 'POST']) # POST metodunu ekledik
+def index():
+    # --- YENİ EKLENECEK KISIM 2: KAYDETME İŞLEMİ ---
+    if request.method == 'POST':
+        # Formdan gelen verileri alıp listeye ekliyoruz
+        ajan_bilgisi = {
+            'isim': request.form.get('isim'),
+            'konum': request.form.get('konum'),
+            'resim': request.form.get('resim'),
+            'gorev': 'GÖREV BEKLİYOR'
         }
-    except:
-        ajan = {'isim': 'Bilinmiyor', 'resim': '', 'ulke': 'Gizli', 'kod_adi': 'Ghost'}
+        kaydedilen_ajanlar.append(ajan_bilgisi)
+    # -----------------------------------------------
 
-    # --- 2. API: K-9 ORTAĞI (Dog CEO API) ---
-    # Bize rastgele bir köpek resmi verir.
+    # --- SENİN MEVCUT API KODLARIN BURADA KALSIN ---
+    # (Buradaki requests.get kodlarına dokunma)
+    # Örnek:
     try:
-        dog_resp = requests.get('https://dog.ceo/api/breeds/image/random')
-        kopek_resmi = dog_resp.json()['message']
+        ajan = requests.get('https://randomuser.me/api/').json()['results'][0]
+        # ... diğer api kodların ...
     except:
-        # Hata olursa varsayılan bir Alman Kurdu resmi
-        kopek_resmi = "https://images.dog.ceo/breeds/germanshepherd/n02106662_13910.jpg"
+        ajan = {'name': {'first': 'Bilinmiyor', 'last': ''}, 'location': {'city': 'Yok', 'country': ''}, 'picture': {'large': ''}}
 
-    # --- 3. API: GİZLİ FON / BITCOIN (CoinDesk API) ---
-    # Bize anlık Bitcoin fiyatını verir.
-    try:
-        btc_resp = requests.get('https://api.coindesk.com/v1/bpi/currentprice.json')
-        btc_fiyat = btc_resp.json()['bpi']['USD']['rate']
-    except:
-        btc_fiyat = "ERİŞİM YOK"
-
-    return render_template('index.html', ajan=ajan, kopek=kopek_resmi, para=btc_fiyat)
+    # ÖNEMLİ: return kısmına "kayitlar=kaydedilen_ajanlar" ekliyoruz
+    return render_template('index.html', ajan=ajan, kopek=kopek_resmi, para=btc_fiyat, kayitlar=kaydedilen_ajanlar)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000)
