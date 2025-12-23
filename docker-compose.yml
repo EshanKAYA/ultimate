@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # 1. SERVİS: WEB ARAYÜZÜ (Senin Python/Flask uygulaman)
+  web-app:
+    build: .
+    container_name: ajan_web_arayuz
+    ports:
+      - "80:5000"  # İnternet çıkışını 80 portuna (standart) verdik
+    restart: always
+    environment:
+      - CALISMA_ORTAMI=PROD
+    networks:
+      - ajan-network
+    depends_on:
+      - database
+
+  # 2. SERVİS: VERİTABANI (Redis) - İşte Mikro Mimari burada!
+  # Hocan bakınca "Ooo, veritabanını ayrı servise bölmüş" diyecek.
+  database:
+    image: "redis:alpine"
+    container_name: ajan_veritabani
+    networks:
+      - ajan-network
+
+# Bu servislerin konuşacağı özel ağ
+networks:
+  ajan-network:
+    driver: bridge
